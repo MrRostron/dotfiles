@@ -1,0 +1,74 @@
+[env]
+TERM = "alacritty"
+
+[general]
+live_config_reload = true     # Optional: live reload on save (default = true)
+
+[window]
+dimensions.columns = 140
+dimensions.lines = 38
+padding.x = 2
+padding.y = 2
+decorations = "None"          # "None" for borderless if Qtile draws borders
+opacity = 0.7
+blur = false
+startup_mode = "Windowed"
+title = "Alacritty"
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+[font]
+normal.family = "JetBrainsMono Nerd Font"
+normal.style = "Regular"
+bold.family = "JetBrainsMono Nerd Font"
+bold.style = "Bold"
+italic.family = "JetBrainsMono Nerd Font"
+italic.style = "Italic"
+bold_italic.family = "JetBrainsMono Nerd Font"
+bold_italic.style = "Bold Italic"
+
+size = 9.0
+
+offset.x = 0
+offset.y = 1
+
+builtin_box_drawing = true
+
+[colors.primary]
+background = "#1e1e2e"
+foreground = "#cdd6f4"
+
+[colors.normal]
+black   = "#45475a"
+red     = "#f38ba8"
+green   = "#a6e3a1"
+yellow  = "#f9e2af"
+blue    = "#89b4fa"
+magenta = "#f5c2e7"
+cyan    = "#94e2d5"
+white   = "#bac2de"
+
+[colors.bright]
+black   = "#585b70"
+red     = "#f38ba8"
+green   = "#a6e3a1"
+yellow  = "#f9e2af"
+blue    = "#89b4fa"
+magenta = "#f5c2e7"
+cyan    = "#94e2d5"
+white   = "#a6adc8"
+
+[cursor]
+style.shape = "Block"
+style.blinking = "On"
+vi_mode_style = { shape = "Beam", blinking = "On" }
+unfocused_hollow = true
+thickness = 0.15
+
+[keyboard]
+bindings = [
+  { key = "Return", mods = "Control|Shift", action = "SpawnNewInstance" },
+  { key = "F11",    mods = "None",           action = "ToggleFullscreen" },
+]
