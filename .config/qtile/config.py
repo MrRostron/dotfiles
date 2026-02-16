@@ -1,17 +1,18 @@
 import os
+import subprocess
 
 import libqtile.resources
-from libqtile import bar, layout, qtile, widget
+from bar.bar import get_bar
+from colors.colors import colors
+from keys.bindings import keys, mod, terminal
+from libqtile import bar, hook, layout, qtile, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
-from keys.bindings import keys, mod, terminal
-from bar.bar import get_bar
-import subprocess
-from libqtile import hook
+from qtile_extras.layout.decorations import SolidEdge
+
 # Add key bindings to switch VTs in Wayland.
 # We can't check qtile.core.name in default config as it is loaded before qtile is started
 # We therefore defer the check until the key binding is run by using .when(func=...)
-os.system("pgrep picom || picom --config ~/.config/picom/picom.config")
 for vt in range(1, 8):
     keys.append(
         Key(
@@ -49,13 +50,24 @@ for i in groups:
         ]
     )
 layouts = [
-    layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4),
-    layout.Max(),
+    # layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4),
+    # layout.Max(),
     # Try more layouts by unleashing below layouts.
     # layout.Stack(num_stacks=2),
     # layout.Bsp(),
     # layout.Matrix(),
-    # layout.MonadTall(),
+    layout.MonadTall(
+        border_focus=SolidEdge(
+            colours=[
+                colors["bg-dim"],
+                colors["bg-dim"],
+                colors["magenta"],
+                colors["bg-dim"],
+            ]
+        ),
+        border_normal=colors["bg-main"],
+        border_width=2,
+    ),
     # layout.MonadWide(),
     # layout.RatioTile(),
     # layout.Tile(),
@@ -63,22 +75,13 @@ layouts = [
     # layout.VerticalTile(),
     # layout.Zoomy(),
 ]
-    
 
-widget_defaults = dict(
-    font="sans",
-    fontsize=12,
-    padding=3,
-)
-extension_defaults = widget_defaults.copy()
 
 logo = os.path.join(os.path.dirname(libqtile.resources.__file__), "logo.png")
 screens = [
     Screen(
         top=get_bar(),
         background="#000000",
-        wallpaper=logo,
-        wallpaper_mode="center",
         # You can uncomment this variable if you see that on X11 floating resize/moving is laggy
         # By default we handle these events delayed to already improve performance, however your system might still be struggling
         # This variable is set to None (no cap) by default, but you can set it to 60 to indicate that you limit it to 60 events per second
@@ -88,8 +91,15 @@ screens = [
 
 # Drag floating layouts.
 mouse = [
-    Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
-    Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
+    Drag(
+        [mod],
+        "Button1",
+        lazy.window.set_position_floating(),
+        start=lazy.window.get_position(),
+    ),
+    Drag(
+        [mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()
+    ),
     Click([mod], "Button2", lazy.window.bring_to_front()),
 ]
 
@@ -138,9 +148,9 @@ idle_inhibitors = []  # type: list
 # We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
 # java that happens to be on java's whitelist.
 wmname = "LG3D"
+
+
 @hook.subscribe.startup_once
-def autostart_picom():
-    # Spawn picom in background, with your config if you have one
-    subprocess.Popen(["picom", "--config", os.path.expanduser("~/.config/picom/picom.conf"), "-b"])
-    # Or minimal (no config file needed if defaults are fine):
-    # subprocess.Popen(["picom", "-b"])
+def autostart():
+    script = os.path.expanduser("~/.config/qtile/scripts/autostart.sh")
+    subprocess.run([script])
